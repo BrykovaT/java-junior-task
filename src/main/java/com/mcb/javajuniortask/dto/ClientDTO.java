@@ -10,4 +10,5 @@ public class ClientDTO {
     private UUID id;
     private String name;
     private BigDecimal totalDebt;
+    private Long totalTransactions;
 }

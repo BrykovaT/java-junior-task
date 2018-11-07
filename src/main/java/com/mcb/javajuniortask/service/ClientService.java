@@ -3,6 +3,7 @@ package com.mcb.javajuniortask.service;
 import com.mcb.javajuniortask.dto.ClientDTO;
 import com.mcb.javajuniortask.model.Client;
 import com.mcb.javajuniortask.model.Debt;
+import com.mcb.javajuniortask.model.Transaction;
 import com.mcb.javajuniortask.repository.ClientRepository;
 
 import org.springframework.shell.standard.ShellComponent;
@@ -28,8 +29,10 @@ public class ClientService {
     public Iterable<ClientDTO> showAllClients() {
         return StreamSupport.stream(clientRepository.findAll().spliterator(), false).map(client -> {
             ClientDTO clientDTO = new ClientDTO();
+            clientDTO.setId(client.getId());
             clientDTO.setName(client.getName());
             clientDTO.setTotalDebt(client.getDebts().stream().map(Debt::getValue).reduce(BigDecimal::add).orElse(BigDecimal.ZERO));
+            clientDTO.setTotalTransactions((long) client.getTransactions().size());
             return clientDTO;
         }).collect(Collectors.toList());
     }
@@ -53,6 +56,11 @@ public class ClientService {
         debt.setId(UUID.randomUUID());
         debt.setClient(client);
         client.getDebts().add(debt);
+        Transaction transaction = new Transaction();
+        transaction.setValue(value);
+        transaction.setId(UUID.randomUUID());
+        transaction.setClient(client);
+        client.getTransactions().add(transaction);
         clientRepository.save(client);
         return debt.getId();
     }
@@ -65,6 +73,11 @@ public class ClientService {
         debt.setId(UUID.randomUUID());
         debt.setClient(client);
         client.getDebts().add(debt);
+        Transaction transaction = new Transaction();
+        transaction.setValue(value);
+        transaction.setId(UUID.randomUUID());
+        transaction.setClient(client);
+        client.getTransactions().add(transaction);
         clientRepository.save(client);
         return debt.getId();
     }
