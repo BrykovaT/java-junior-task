@@ -56,5 +56,16 @@ public class ClientService {
         clientRepository.save(client);
         return debt.getId();
     }
-
+    @ShellMethod(value = "Pay debt for client")
+    @Transactional
+    public UUID payDebtForClient(@ShellOption UUID clientId, @ShellOption BigDecimal value) {
+        Client client = clientRepository.findOne(clientId);
+        Debt debt = new Debt();
+        debt.setValue(value.negate());
+        debt.setId(UUID.randomUUID());
+        debt.setClient(client);
+        client.getDebts().add(debt);
+        clientRepository.save(client);
+        return debt.getId();
+    }
 }
